@@ -7,9 +7,9 @@ export default function HomePage() {
       <Navbar />
       <section className="relative bg-teal-900 text-white py-24 lg:py-40">
         <div className="container mx-auto px-4 text-center max-w-2xl">
-          <h1 className="text-5xl md:text-7xl font-bold tracking-tight mb-6">Energizing a Green Future</h1>
+          <h1 className="text-5xl md:text-7xl font-bold tracking-tight mb-6">New Page Template</h1>
           <p className="text-lg opacity-80 mb-10">
-            Join us on a journey towards a cleaner, healthier planet with modern web tooling.
+            This is the beginning of our project. Join with us now!
           </p>
           <Link
             href="/register"
