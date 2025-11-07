@@ -1,9 +1,9 @@
 export const API_BASE = process.env.NEXT_PUBLIC_API_BASE_URL ?? 'http://localhost:3000';
 
-export type RegisterPayload = { email: string; password: string };
+export type RegisterPayload = { name: string, email: string; password: string };
 export type RegisterResponse = {
   message: string;
-  data: { id: string; email: string; createdAt: string };
+  data: { id: string; name: string; email: string; createdAt: string };
 };
 
 export async function registerUser(payload: RegisterPayload): Promise<RegisterResponse> {

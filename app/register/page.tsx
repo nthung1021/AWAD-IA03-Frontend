@@ -31,7 +31,18 @@ export default function RegisterPage() {
         <form
           onSubmit={handleSubmit((values: any) => mutate(values))}
           className="space-y-4 bg-white p-6 rounded-2xl shadow"
-        >
+        >  
+          <div>
+            <label className="block text-sm font-medium mb-1">Name</label>
+            <input
+              type="text"
+              className="w-full rounded-lg border px-3 py-2 outline-none focus:ring-2 focus:ring-teal-600"
+              placeholder="Your Name"
+              {...register('name')}
+            />
+            {errors.name && <p className="text-sm text-red-600 mt-1 font-bold">{errors.name.message}</p>}
+          </div>
+ 
           <div>
             <label className="block text-sm font-medium mb-1">Email</label>
             <input
@@ -40,7 +51,7 @@ export default function RegisterPage() {
               placeholder="you@example.com"
               {...register('email')}
             />
-            {errors.email && <p className="text-sm text-red-600 mt-1">{errors.email.message}</p>}
+            {errors.email && <p className="text-sm text-red-600 mt-1 font-bold">{errors.email.message}</p>}
           </div>
 
           <div>
@@ -51,7 +62,7 @@ export default function RegisterPage() {
               placeholder="At least 8 characters"
               {...register('password')}
             />
-            {errors.password && <p className="text-sm text-red-600 mt-1">{errors.password.message}</p>}
+            {errors.password && <p className="text-sm text-red-600 mt-1 font-bold">{errors.password.message}</p>}
           </div>
 
           <button
@@ -62,7 +73,7 @@ export default function RegisterPage() {
             {isPending ? 'Creating account…' : 'Sign up'}
           </button>
 
-          {error && <p className="text-sm text-red-600">Error: {String(error.message)}</p>}
+          {error && <p className="text-sm text-red-600 font-bold">Error: {String(error.message)}</p>}
           {successMsg && <p className="text-sm text-green-700">{successMsg}</p>}
 
           <p className="text-sm">
