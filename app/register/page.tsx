@@ -1,0 +1,76 @@
+'use client';
+
+import Navbar from '@/components/Navbar';
+import { useForm } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { registerSchema, type RegisterForm } from '@/lib/validators';
+import { useMutation } from '@tanstack/react-query';
+import { registerUser } from '@/lib/api';
+import { useState } from 'react';
+import Link from 'next/link';
+
+export default function RegisterPage() {
+  const [successMsg, setSuccessMsg] = useState<string | null>(null);
+  const {
+    register, handleSubmit, formState: { errors }, reset,
+  } = useForm<RegisterForm>({ resolver: zodResolver(registerSchema) });
+
+  const { mutate, isPending, error } = useMutation({
+    mutationFn: registerUser,
+    onSuccess: (data: { message: any; }) => {
+      setSuccessMsg(data.message || 'Registered successfully!');
+      reset();
+    },
+  });
+
+  return (
+    <main>
+      <Navbar />
+      <section className="container mx-auto px-4 py-12 max-w-lg">
+        <h1 className="text-3xl font-semibold mb-6">Create your account</h1>
+        <form
+          onSubmit={handleSubmit((values: any) => mutate(values))}
+          className="space-y-4 bg-white p-6 rounded-2xl shadow"
+        >
+          <div>
+            <label className="block text-sm font-medium mb-1">Email</label>
+            <input
+              type="email"
+              className="w-full rounded-lg border px-3 py-2 outline-none focus:ring-2 focus:ring-teal-600"
+              placeholder="you@example.com"
+              {...register('email')}
+            />
+            {errors.email && <p className="text-sm text-red-600 mt-1">{errors.email.message}</p>}
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium mb-1">Password</label>
+            <input
+              type="password"
+              className="w-full rounded-lg border px-3 py-2 outline-none focus:ring-2 focus:ring-teal-600"
+              placeholder="At least 8 characters"
+              {...register('password')}
+            />
+            {errors.password && <p className="text-sm text-red-600 mt-1">{errors.password.message}</p>}
+          </div>
+
+          <button
+            type="submit"
+            disabled={isPending}
+            className="w-full inline-flex items-center justify-center rounded-full bg-teal-900 text-white py-2.5 hover:bg-black transition disabled:opacity-60"
+          >
+            {isPending ? 'Creating account…' : 'Sign up'}
+          </button>
+
+          {error && <p className="text-sm text-red-600">Error: {String(error.message)}</p>}
+          {successMsg && <p className="text-sm text-green-700">{successMsg}</p>}
+
+          <p className="text-sm">
+            Already have an account?{' '}
+            <Link href="/login" className="underline text-teal-800">Login</Link>
+          </p>
+        </form>
+      </section>
+    </main>
+  );
+}
