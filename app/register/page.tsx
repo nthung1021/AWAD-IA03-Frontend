@@ -11,15 +11,36 @@ import Link from 'next/link';
 
 export default function RegisterPage() {
   const [successMsg, setSuccessMsg] = useState<string | null>(null);
+  const [generalError, setGeneralError] = useState<string | null>(null);
+
   const {
-    register, handleSubmit, formState: { errors }, reset,
+    register,
+    handleSubmit,
+    formState: { errors },
+    reset,
+    clearErrors,
+    setError,
   } = useForm<RegisterForm>({ resolver: zodResolver(registerSchema) });
 
-  const { mutate, isPending, error } = useMutation({
+  const { mutate, isPending } = useMutation({
     mutationFn: registerUser,
-    onSuccess: (data: { message: any; }) => {
+    onMutate: () => {
+      setSuccessMsg(null);
+      setGeneralError(null);
+      clearErrors();
+    },
+    onSuccess: (data) => {
       setSuccessMsg(data.message || 'Registered successfully!');
+      clearErrors();
       reset();
+    },
+    onError: (err: any) => {
+      setSuccessMsg(null); // hide success if an error occurs
+      if (err?.field && err?.message) {
+        setError(err.field as keyof RegisterForm, { type: 'server', message: err.message });
+      } else {
+        setGeneralError(err?.message || 'Registration failed');
+      }
     },
   });
 
@@ -28,10 +49,11 @@ export default function RegisterPage() {
       <Navbar />
       <section className="container mx-auto px-4 py-12 max-w-lg">
         <h1 className="text-3xl font-semibold mb-6">Create your account</h1>
+
         <form
-          onSubmit={handleSubmit((values: any) => mutate(values))}
+          onSubmit={handleSubmit(values => mutate(values))}
           className="space-y-4 bg-white p-6 rounded-2xl shadow"
-        >  
+        >
           <div>
             <label className="block text-sm font-medium mb-1">Name</label>
             <input
@@ -40,9 +62,11 @@ export default function RegisterPage() {
               placeholder="Your Name"
               {...register('name')}
             />
-            {errors.name && <p className="text-sm text-red-600 mt-1 font-bold">{errors.name.message}</p>}
+            {errors.name && (
+              <p className="text-sm text-red-600 mt-1 font-bold">{errors.name.message}</p>
+            )}
           </div>
- 
+
           <div>
             <label className="block text-sm font-medium mb-1">Email</label>
             <input
@@ -51,7 +75,9 @@ export default function RegisterPage() {
               placeholder="you@example.com"
               {...register('email')}
             />
-            {errors.email && <p className="text-sm text-red-600 mt-1 font-bold">{errors.email.message}</p>}
+            {errors.email && (
+              <p className="text-sm text-red-600 mt-1 font-bold">{errors.email.message}</p>
+            )}
           </div>
 
           <div>
@@ -62,7 +88,9 @@ export default function RegisterPage() {
               placeholder="At least 8 characters"
               {...register('password')}
             />
-            {errors.password && <p className="text-sm text-red-600 mt-1 font-bold">{errors.password.message}</p>}
+            {errors.password && (
+              <p className="text-sm text-red-600 mt-1 font-bold">{errors.password.message}</p>
+            )}
           </div>
 
           <button
@@ -73,12 +101,18 @@ export default function RegisterPage() {
             {isPending ? 'Creating account…' : 'Sign up'}
           </button>
 
-          {error && <p className="text-sm text-red-600 font-bold">Error: {String(error.message)}</p>}
-          {successMsg && <p className="text-sm text-green-700 font-bold">{successMsg}</p>}
+          {successMsg && !generalError && (
+            <p className="text-sm text-green-700 font-bold">{successMsg}</p>
+          )}
+          {generalError && !successMsg && (
+            <p className="text-sm text-red-600 font-bold">Error: {generalError}</p>
+          )}
 
           <p className="text-sm">
             Already have an account?{' '}
-            <Link href="/login" className="underline text-teal-800">Login</Link>
+            <Link href="/login" className="underline text-teal-800">
+              Login
+            </Link>
           </p>
         </form>
       </section>
