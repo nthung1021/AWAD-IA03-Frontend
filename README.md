@@ -1,3 +1,9 @@
+## Introduction
+
+A simple web application demonstrating the User Authentication using React library with the help of React Query.
+
+This is the individual assignment (number 3) in the subject Advanced Web Application Development (AWAD) as an exercise for practicing React.
+
 This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
 
 ## Getting Started
