@@ -74,7 +74,7 @@ export default function RegisterPage() {
           </button>
 
           {error && <p className="text-sm text-red-600 font-bold">Error: {String(error.message)}</p>}
-          {successMsg && <p className="text-sm text-green-700">{successMsg}</p>}
+          {successMsg && <p className="text-sm text-green-700 font-bold">{successMsg}</p>}
 
           <p className="text-sm">
             Already have an account?{' '}
